@@ -6,12 +6,12 @@ import { seal } from 'tweetsodium';
 export const github = getOctokit(getInput('github-token', { required: true }));
 
 export const setRepoSecret = async (name: string, value: string) => {
-  const { data } = await github.actions.getRepoPublicKey(context.repo);
+  const { data } = await github.rest.actions.getRepoPublicKey(context.repo);
   const encryptedValue = seal(
     Buffer.from(value),
     Buffer.from(data.key, 'base64')
   );
-  await github.actions.createOrUpdateRepoSecret({
+  await github.rest.actions.createOrUpdateRepoSecret({
     ...context.repo,
     secret_name: name,
     key_id: data.key_id,
